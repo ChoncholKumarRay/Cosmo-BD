@@ -28,7 +28,7 @@ app.use('/api/admin', adminRoutes);
 
 
 //User routes for different functionality
-app.use('/api/user', userRoutes);
+// app.use('/api/user', userRoutes);
 
 
 const PORT = process.env.PORT || 5000;
