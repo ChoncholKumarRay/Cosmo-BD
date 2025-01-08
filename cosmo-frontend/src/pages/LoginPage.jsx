@@ -9,6 +9,9 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const cosmoBackend = import.meta.env.VITE_COSMO_BACKEND;
+  console.log(cosmoBackend);
+
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -18,8 +21,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // Sending the login request using fetch
-      const response = await fetch("http://localhost:5002/api/admin/login", {
+      const response = await fetch(`${cosmoBackend}/api/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,11 +33,8 @@ const Login = () => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        console.log(localStorage.getItem("cosmo-admin-token"));
-        // Navigate to the dashboard after successful login
         navigate("/dashboard");
       } else {
-        // Display error message if login failed
         setErrorMessage(data.message || "Login failed");
       }
     } catch (error) {
