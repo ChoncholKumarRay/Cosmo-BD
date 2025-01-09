@@ -138,9 +138,6 @@ router.post('/update-status', authenticateJWT, async (req, res) => {
     supply.current_status = status;
     await supply.save();
 
-    console.log(supply);
-    console.log(code, supplyId);
-    
     res.status(200).json({ message: 'Status updated successfully!' });
   } catch (error) {
     console.error('Error in /update-status:', error);
