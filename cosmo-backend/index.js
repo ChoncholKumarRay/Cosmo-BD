@@ -9,8 +9,15 @@ const userRoutes = require('./routes/userRoutes')
 dotenv.config(); 
 
 const app = express();
+// Configure CORS options
+const corsOptions = {
+  origin: ['https://cosmo-bd.vercel.app', 'http://localhost:5175'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
-app.use(cors());
+// Use CORS middleware
+app.use(cors(corsOptions));
 app.use(express.json()); 
 
 // MongoDB connection
