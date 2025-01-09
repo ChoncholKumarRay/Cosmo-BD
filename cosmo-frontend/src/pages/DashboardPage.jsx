@@ -8,6 +8,7 @@ const DashboardPage = () => {
   const [error, setError] = useState(null);
   const [responseMessages, setResponseMessages] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
+  const [currentStatus, setCurrentStatus] = useState("");
 
   useEffect(() => {
     const fetchSupplies = async () => {
@@ -59,6 +60,8 @@ const DashboardPage = () => {
         ...prev,
         [supplyId]: data.message || "Status updated successfully.",
       }));
+
+      setCurrentStatus(status);
     } catch (error) {
       setResponseMessages((prev) => ({
         ...prev,
@@ -103,7 +106,7 @@ const DashboardPage = () => {
               </p>
               <p>
                 <strong>Current Status:</strong>{" "}
-                {supply.current_status?.message || "Pending"}
+                {currentStatus !== "" ? currentStatus : supply.current_status}
               </p>
               <div className="action-row">
                 <select

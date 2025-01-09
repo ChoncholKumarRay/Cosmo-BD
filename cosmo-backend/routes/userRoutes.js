@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const Supply = require("../models/Supply");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 // API endpoint to create a new supply document
 router.post("/req-supply", async (req, res) => {
   const {
+    verification_code,
     supply_id,
     ordered_products,
     payment,
@@ -26,6 +30,14 @@ router.post("/req-supply", async (req, res) => {
   ) {
     return res.status(400).json({
       message: "All fields are required (supply_id, ordered_products, payment, bank_transaction, buyer_name, phone, address).",
+    });
+  }
+
+  const artisanCode=process.env.ARTISAN_VERIFICATION_CODE;
+
+  if (verification_code !== artisanCode){
+    return res.status(400).json({
+      message: "Unknown user api request",
     });
   }
 
