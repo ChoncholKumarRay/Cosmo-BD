@@ -1,69 +1,78 @@
-/* DashboardPage.css */
-
+/* Make the dashboard full-screen */
 .dashboard {
+  background-color: #121212;
+  color: #e0e0e0;
+  min-height: 100vh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #6e45e2, #89d4cf);
-  background-size: cover;
-  font-family: Arial, sans-serif;
-  color: #eaeaea;
 }
 
-.dashboard-title {
-  font-size: 2rem;
-  color: #f5f5f5;
-  margin-bottom: 40px;
-  text-align: center;
-  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-}
-
-.error-message {
-  color: #f44336;
-  font-size: 1rem;
+.dashboard h1 {
   margin-bottom: 20px;
-  text-align: center;
+  font-size: 2.5rem;
+  color: #ffffff;
 }
 
-.user-table {
+/* Container for supply cards */
+.supply-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 800px;
-  margin-top: 20px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 12px;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Each supply card */
+.supply-card {
+  background-color: #1f1f1f;
+  border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
+  width: 300px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.table-header,
-.table-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid #333;
+.supply-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.7);
 }
 
-.table-header {
-  text-align: center;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #f5f5f5;
-}
-
-.table-row {
-  text-align: center;
+.supply-card p {
+  margin: 10px 0;
   font-size: 1rem;
-  color: #dcdcdc;
 }
 
-.table-row .table-username {
-  text-align: left;
-  padding-left: 50px;
+/* Action row with dropdown and button */
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+/* Dropdown for status selection */
+.status-dropdown {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 0.9rem;
+}
+
+/* Update button */
+.update-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-button:hover {
+  background-color: #45a049;
 }

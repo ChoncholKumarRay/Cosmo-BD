@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const router = express.Router();
+const Supply = require("../models/Supply");
 
 dotenv.config();
 
@@ -32,14 +33,15 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
-// Admin route to get all bank users
-// router.get('/get-supply', authenticateJWT, async (req, res) => {
-//   try {
-//     const users = await User.find({}, 'username bank_account balance'); 
-//     res.json(users);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Failed to fetch users' });
-//   }
-// });
+
+// Admin route to get all the users
+router.get('/get-supply', authenticateJWT, async (req, res) => {
+  try {
+    const supplies = await Supply.find(); 
+    res.json(supplies);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch supply records' });
+  }
+});
 
 module.exports = router;

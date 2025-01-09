@@ -32,7 +32,7 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("cosmobd-admin-token", data.token);
         navigate("/dashboard");
       } else {
         setErrorMessage(data.message || "Login failed");
