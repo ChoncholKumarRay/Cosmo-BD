@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { GoNumber } = require("react-icons/go");
 
 const supplierSchema = new mongoose.Schema(
   {
@@ -15,10 +14,7 @@ const supplierSchema = new mongoose.Schema(
     buyer_name: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
-    current_status: {
-      code: { type: String},
-      message: { type: String},
-    },
+    current_status: { type: String, default:""},
   },
   { timestamps: true }
 );

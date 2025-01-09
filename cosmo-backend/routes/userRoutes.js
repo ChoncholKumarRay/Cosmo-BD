@@ -46,7 +46,6 @@ router.post("/req-supply", async (req, res) => {
       buyer_name,
       phone,
       address,
-      current_status: { code: "", message: "" }, // Initially blank
     });
 
     // Save the new supply document to the collection

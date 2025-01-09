@@ -114,9 +114,9 @@ const DashboardPage = () => {
                   }
                 >
                   <option value="">Select Status</option>
-                  <option value="acknowledged">Acknowledged</option>
-                  <option value="packaged">Packaged</option>
-                  <option value="delivered">Delivered</option>
+                  <option value="Acknowledged">Acknowledged</option>
+                  <option value="Packaged">Packaged</option>
+                  <option value="Delivered">Delivered</option>
                 </select>
                 <button
                   className="update-button"

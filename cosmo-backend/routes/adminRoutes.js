@@ -92,12 +92,55 @@ router.post('/update-status', authenticateJWT, async (req, res) => {
       return res.status(400).json({ message: 'Supply ID and status are required' });
     }
 
-    // For now, just log the data
-    console.log(`Received request to update status`);
-    console.log(`Supply ID: ${supplyId}`);
-    console.log(`New Status: ${status}`);
+    // Mapping status with corresponding code
+    const statusCodeMap = {
+      Acknowledged: 450,
+      Packaged: 550,
+      Delivered: 650,
+    };
 
-    // Send success response
+    const code = statusCodeMap[status];
+    if (!code) {
+      return res.status(400).json({ message: 'Invalid status provided' });
+    }
+    const verificationCode = process.env.MY_VERIFICATION_CODE;
+    if (!verificationCode) {
+      return res.status(500).json({ message: 'Server configuration error: Verification code not found' });
+    }
+
+    // Call external API using fetch
+    const response = await fetch('http://localhost:5000/api/order/update-status', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        supply_id:supplyId,
+        code,
+        status,
+        verification_code: verificationCode,
+      }),
+    });
+
+    // Handle response from external API
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json({ message: responseData.message || 'Failed to update status in the external system' });
+    }
+
+    const supply = await Supply.findOne({ supply_id: supplyId });
+    if (!supply) {
+      return res.status(404).json({ message: 'Supply record not found.' });
+    }
+
+    // Update current_status in the supply document
+    supply.current_status = status;
+    await supply.save();
+
+    console.log(supply);
+    console.log(code, supplyId);
+    
     res.status(200).json({ message: 'Status updated successfully!' });
   } catch (error) {
     console.error('Error in /update-status:', error);
