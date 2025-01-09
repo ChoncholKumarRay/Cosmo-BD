@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const router = express.Router();
 const Supply = require("../models/Supply");
+const Product = require("../models/Product");
 
 dotenv.config();
 
@@ -35,11 +36,61 @@ const authenticateJWT = (req, res, next) => {
 
 
 // Admin route to get all the users
+/*
 router.get('/get-supply', authenticateJWT, async (req, res) => {
   try {
     const supplies = await Supply.find(); 
     res.json(supplies);
   } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch supply records' });
+  }
+}); */
+
+
+
+router.get('/get-supply', authenticateJWT, async (req, res) => {
+  try {
+    // Fetch all supply records
+    const supplies = await Supply.find();
+
+    // Map over supplies to fetch product details and add calculated fields
+    const enhancedSupplies = await Promise.all(
+      supplies.map(async (supply) => {
+        const enrichedProducts = await Promise.all(
+          supply.ordered_products.map(async (orderedProduct) => {
+            const product = await Product.findOne({ product_id: orderedProduct.product_id });
+
+            if (product) {
+              const subtotal_price = product.price * orderedProduct.quantity;
+              return {
+                product_id: product.product_id,
+                name: product.name,
+                price: product.price,
+                quantity: orderedProduct.quantity,
+                subtotal_price,
+              };
+            }
+
+            return { product_id: orderedProduct.product_id, error: "Product not found" };
+          })
+        );
+
+        // Calculate total_price as the sum of all subtotal_price
+        const total_price = enrichedProducts
+          .filter((product) => !product.error) // Exclude missing products
+          .reduce((sum, product) => sum + product.subtotal_price, 0);
+
+        return {
+          ...supply.toObject(), // Convert Mongoose document to plain JS object
+          enriched_products: enrichedProducts,
+          total_price, // Include calculated total price
+        };
+      })
+    );
+
+    res.json(enhancedSupplies);
+  } catch (error) {
+    console.error("Error in fetching supply records:", error);
     res.status(500).json({ message: 'Failed to fetch supply records' });
   }
 });

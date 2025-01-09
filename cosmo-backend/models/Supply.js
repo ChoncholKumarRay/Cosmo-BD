@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
+const { GoNumber } = require("react-icons/go");
 
 const supplierSchema = new mongoose.Schema(
   {
     supply_id: { type: String, required: true, unique: true },
     ordered_products: [
       {
-        product_id: { type: String, required: true },
+        product_id: { type: Number, required: true },
         quantity: { type: Number, required: true },
       },
     ],
@@ -22,4 +23,4 @@ const supplierSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Supplier", supplierSchema, "supply");
+module.exports = mongoose.model("Supply", supplierSchema, "supply");
