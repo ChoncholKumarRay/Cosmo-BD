@@ -14,7 +14,7 @@ const supplierSchema = new mongoose.Schema(
     buyer_name: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
-    current_status: { type: String, default:""},
+    current_status: { type: String, default:"Pending"},
   },
   { timestamps: true }
 );
