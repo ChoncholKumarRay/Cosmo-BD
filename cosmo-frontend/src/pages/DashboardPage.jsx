@@ -44,7 +44,7 @@ const DashboardPage = () => {
       setDisabledButtons((prev) => ({ ...prev, [supplyId]: true })); // Disable the button
       const token = localStorage.getItem("cosmobd-admin-token");
       const response = await fetch(
-        "http://localhost:5002/api/admin/update-status",
+        "https://cosmo-bd.onrender.com/api/admin/update-status",
         {
           method: "POST",
           headers: {
