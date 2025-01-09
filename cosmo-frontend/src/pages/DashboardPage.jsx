@@ -3,13 +3,16 @@ import "./styles/DashboardPage.css";
 
 const DashboardPage = () => {
   const [supplies, setSupplies] = useState([]);
+  const [statuses, setStatuses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [responseMessages, setResponseMessages] = useState({});
+  const [disabledButtons, setDisabledButtons] = useState({});
 
   useEffect(() => {
     const fetchSupplies = async () => {
       try {
-        const token = localStorage.getItem("cosmobd-admin-token"); // Assumes login stores token
+        const token = localStorage.getItem("cosmobd-admin-token");
         const response = await fetch(
           "http://localhost:5002/api/admin/get-supply",
           {
@@ -34,6 +37,41 @@ const DashboardPage = () => {
 
     fetchSupplies();
   }, []);
+
+  const handleUpdateStatus = async (supplyId, status) => {
+    try {
+      setDisabledButtons((prev) => ({ ...prev, [supplyId]: true })); // Disable the button
+      const token = localStorage.getItem("cosmobd-admin-token");
+      const response = await fetch(
+        "http://localhost:5002/api/admin/update-status",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ supplyId, status }),
+        }
+      );
+
+      const data = await response.json();
+      setResponseMessages((prev) => ({
+        ...prev,
+        [supplyId]: data.message || "Status updated successfully.",
+      }));
+    } catch (error) {
+      setResponseMessages((prev) => ({
+        ...prev,
+        [supplyId]: "Failed to update status. Please try again.",
+      }));
+    } finally {
+      setDisabledButtons((prev) => ({ ...prev, [supplyId]: false })); // Re-enable the button
+    }
+  };
+
+  const handleStatusChange = (supplyId, newStatus) => {
+    setStatuses((prev) => ({ ...prev, [supplyId]: newStatus }));
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -68,13 +106,41 @@ const DashboardPage = () => {
                 {supply.current_status?.message || "Pending"}
               </p>
               <div className="action-row">
-                <select className="status-dropdown">
-                  <option value="acknowledge">Acknowledge</option>
+                <select
+                  className="status-dropdown"
+                  value={statuses[supply.supply_id] || ""}
+                  onChange={(e) =>
+                    handleStatusChange(supply.supply_id, e.target.value)
+                  }
+                >
+                  <option value="">Select Status</option>
+                  <option value="acknowledged">Acknowledged</option>
                   <option value="packaged">Packaged</option>
                   <option value="delivered">Delivered</option>
                 </select>
-                <button className="update-button">Update Status</button>
+                <button
+                  className="update-button"
+                  onClick={() =>
+                    handleUpdateStatus(
+                      supply.supply_id,
+                      statuses[supply.supply_id]
+                    )
+                  }
+                  disabled={
+                    disabledButtons[supply.supply_id] ||
+                    !statuses[supply.supply_id]
+                  }
+                >
+                  {disabledButtons[supply.supply_id]
+                    ? "Updating..."
+                    : "Update Status"}
+                </button>
               </div>
+              {responseMessages[supply.supply_id] && (
+                <p className="response-message">
+                  {responseMessages[supply.supply_id]}
+                </p>
+              )}
             </div>
             <div className="right-section">
               <h3>Ordered Products</h3>

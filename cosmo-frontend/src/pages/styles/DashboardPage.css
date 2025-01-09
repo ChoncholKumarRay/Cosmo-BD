@@ -91,3 +91,14 @@
 .update-button:hover {
   background-color: #a294f9;
 }
+
+.response-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #f9a825;
+}
+
+.update-button:disabled {
+  background-color: #a5a5a5;
+  cursor: not-allowed;
+}

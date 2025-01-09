@@ -7,6 +7,7 @@ const Product = require("../models/Product");
 
 dotenv.config();
 
+// Admin route to login 
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -34,20 +35,7 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
-
-// Admin route to get all the users
-/*
-router.get('/get-supply', authenticateJWT, async (req, res) => {
-  try {
-    const supplies = await Supply.find(); 
-    res.json(supplies);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch supply records' });
-  }
-}); */
-
-
-
+// Admin route to get all the supplies 
 router.get('/get-supply', authenticateJWT, async (req, res) => {
   try {
     // Fetch all supply records
@@ -92,6 +80,28 @@ router.get('/get-supply', authenticateJWT, async (req, res) => {
   } catch (error) {
     console.error("Error in fetching supply records:", error);
     res.status(500).json({ message: 'Failed to fetch supply records' });
+  }
+});
+
+// Admin route to update status
+router.post('/update-status', authenticateJWT, async (req, res) => {
+  try {
+    const { supplyId, status } = req.body;
+
+    if (!supplyId || !status) {
+      return res.status(400).json({ message: 'Supply ID and status are required' });
+    }
+
+    // For now, just log the data
+    console.log(`Received request to update status`);
+    console.log(`Supply ID: ${supplyId}`);
+    console.log(`New Status: ${status}`);
+
+    // Send success response
+    res.status(200).json({ message: 'Status updated successfully!' });
+  } catch (error) {
+    console.error('Error in /update-status:', error);
+    res.status(500).json({ message: 'Failed to update status' });
   }
 });
 
