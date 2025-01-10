@@ -29,13 +29,14 @@ router.post("/req-supply", async (req, res) => {
     !address
   ) {
     return res.status(400).json({
-      message: "All fields are required (supply_id, ordered_products, payment, bank_transaction, buyer_name, phone, address).",
+      message:
+        "All fields are required (supply_id, ordered_products, payment, bank_transaction, buyer_name, phone, address).",
     });
   }
 
-  const artisanCode=process.env.ARTISAN_VERIFICATION_CODE;
+  const artisanCode = process.env.ARTISAN_VERIFICATION_CODE;
 
-  if (verification_code !== artisanCode){
+  if (verification_code !== artisanCode) {
     return res.status(400).json({
       message: "Unknown user api request",
     });
@@ -53,7 +54,7 @@ router.post("/req-supply", async (req, res) => {
     const newSupply = new Supply({
       supply_id,
       ordered_products,
-      payment:artisan_payment,
+      payment: artisan_payment,
       bank_transaction,
       buyer_name,
       phone,

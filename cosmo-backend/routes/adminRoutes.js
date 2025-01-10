@@ -1,21 +1,26 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 const router = express.Router();
 const Supply = require("../models/Supply");
 const Product = require("../models/Product");
 
 dotenv.config();
 
-// Admin route to login 
-router.post('/login', (req, res) => {
+// Admin route to login
+router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
-    const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ message: 'Login successful', token });
+  if (
+    username === process.env.ADMIN_USERNAME &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    const token = jwt.sign({ username }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ message: "Login successful", token });
   } else {
-    res.status(401).json({ message: `Invalid credentials ${req.body}`});
+    res.status(401).json({ message: `Invalid credentials ${req.body}` });
   }
 });
 
@@ -35,8 +40,8 @@ const authenticateJWT = (req, res, next) => {
   });
 };
 
-// Admin route to get all the supplies 
-router.get('/get-supply', authenticateJWT, async (req, res) => {
+// Admin route to get all the supplies
+router.get("/get-supply", authenticateJWT, async (req, res) => {
   try {
     // Fetch all supply records
     const supplies = await Supply.find();
@@ -46,7 +51,9 @@ router.get('/get-supply', authenticateJWT, async (req, res) => {
       supplies.map(async (supply) => {
         const enrichedProducts = await Promise.all(
           supply.ordered_products.map(async (orderedProduct) => {
-            const product = await Product.findOne({ product_id: orderedProduct.product_id });
+            const product = await Product.findOne({
+              product_id: orderedProduct.product_id,
+            });
 
             if (product) {
               const subtotal_price = product.price * orderedProduct.quantity;
@@ -59,7 +66,10 @@ router.get('/get-supply', authenticateJWT, async (req, res) => {
               };
             }
 
-            return { product_id: orderedProduct.product_id, error: "Product not found" };
+            return {
+              product_id: orderedProduct.product_id,
+              error: "Product not found",
+            };
           })
         );
 
@@ -79,17 +89,19 @@ router.get('/get-supply', authenticateJWT, async (req, res) => {
     res.json(enhancedSupplies);
   } catch (error) {
     console.error("Error in fetching supply records:", error);
-    res.status(500).json({ message: 'Failed to fetch supply records' });
+    res.status(500).json({ message: "Failed to fetch supply records" });
   }
 });
 
 // Admin route to update status
-router.post('/update-status', authenticateJWT, async (req, res) => {
+router.post("/update-status", authenticateJWT, async (req, res) => {
   try {
     const { supplyId, status } = req.body;
 
     if (!supplyId || !status) {
-      return res.status(400).json({ message: 'Supply ID and status are required' });
+      return res
+        .status(400)
+        .json({ message: "Supply ID and status are required" });
     }
 
     // Mapping status with corresponding code
@@ -101,47 +113,56 @@ router.post('/update-status', authenticateJWT, async (req, res) => {
 
     const code = statusCodeMap[status];
     if (!code) {
-      return res.status(400).json({ message: 'Invalid status provided' });
+      return res.status(400).json({ message: "Invalid status provided" });
     }
     const verificationCode = process.env.MY_VERIFICATION_CODE;
     if (!verificationCode) {
-      return res.status(500).json({ message: 'Server configuration error: Verification code not found' });
+      return res.status(500).json({
+        message: "Server configuration error: Verification code not found",
+      });
     }
 
     // Call external API using fetch
-    const response = await fetch('http://localhost:5000/api/order/update-status', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        supply_id:supplyId,
-        code,
-        status,
-        verification_code: verificationCode,
-      }),
-    });
+    const response = await fetch(
+      "https://artisan.cam-sust.org/api/order/update-status",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          supply_id: supplyId,
+          code,
+          status,
+          verification_code: verificationCode,
+        }),
+      }
+    );
 
-    // Handle response from external API
+    // Handle response from Artisan Oion API
     const responseData = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({ message: responseData.message || 'Failed to update status in the external system' });
+      return res.status(response.status).json({
+        message:
+          responseData.message ||
+          "Failed to update status in the external system",
+      });
     }
 
     const supply = await Supply.findOne({ supply_id: supplyId });
     if (!supply) {
-      return res.status(404).json({ message: 'Supply record not found.' });
+      return res.status(404).json({ message: "Supply record not found." });
     }
 
     // Update current_status in the supply document
     supply.current_status = status;
     await supply.save();
 
-    res.status(200).json({ message: 'Status updated successfully!' });
+    res.status(200).json({ message: "Status updated successfully!" });
   } catch (error) {
-    console.error('Error in /update-status:', error);
-    res.status(500).json({ message: 'Failed to update status' });
+    console.error("Error in /update-status:", error);
+    res.status(500).json({ message: "Failed to update status" });
   }
 });
 
