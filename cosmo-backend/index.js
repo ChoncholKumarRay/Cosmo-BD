@@ -9,12 +9,15 @@ const userRoutes = require('./routes/userRoutes')
 dotenv.config(); 
 
 const app = express();
+
 // Configure CORS options
-app.use(cors({
-  origin: ["https://cosmo-bd.vercel.app", "http://localhost:5174"], // Allow multiple origins
-  methods: "GET,POST", // Allow POST and GET requests
-  allowedHeaders: "Content-Type,Authorization", // Allow specific headers
-}));
+app.use(
+  cors({
+    origin: '*', // Allow requests from any domain
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+  })
+);
 
 
 app.use(express.json()); 
@@ -26,10 +29,10 @@ mongoose.connect(process.env.MONGO_URL)
 
 
 // Print all api call
-// app.use((req, res, next) => {
-//   console.log(`${req.method} ${req.url}`);
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
   
 
 // Admin route

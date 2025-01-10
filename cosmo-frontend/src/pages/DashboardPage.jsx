@@ -15,7 +15,7 @@ const DashboardPage = () => {
       try {
         const token = localStorage.getItem("cosmobd-admin-token");
         const response = await fetch(
-          "https://cosmo-bd.onrender.com/api/admin/get-supply",
+          "https://cosmo.cam-sust.org/api/admin/get-supply",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

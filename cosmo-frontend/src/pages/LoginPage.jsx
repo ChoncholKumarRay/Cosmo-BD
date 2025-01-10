@@ -22,7 +22,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://cosmo-bd.onrender.com/api/admin/login",
+        "https://cosmo.cam-sust.org/api/admin/login",
         {
           method: "POST",
           headers: {
