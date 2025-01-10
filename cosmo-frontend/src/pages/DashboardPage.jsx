@@ -85,92 +85,97 @@ const DashboardPage = () => {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          supplies.map((supply) => (
-            <div className="supply-card" key={supply._id}>
-              <div className="left-section">
-                <p>
-                  <strong>Supply ID:</strong> {supply.supply_id}
-                </p>
-                <p>
-                  <strong>Buyer Name:</strong> {supply.buyer_name}
-                </p>
-                <p>
-                  <strong>Phone:</strong> {supply.phone}
-                </p>
-                <p>
-                  <strong>Address:</strong> {supply.address}
-                </p>
-                <p>
-                  <strong>Payment:</strong> {supply.payment}
-                </p>
-                <p>
-                  <strong>Bank Transaction:</strong> {supply.bank_transaction}
-                </p>
-                <p>
-                  <strong>Current Status:</strong>{" "}
-                  {currentStatus !== "" ? currentStatus : supply.current_status}
-                </p>
-                <div className="action-row">
-                  <select
-                    className="status-dropdown"
-                    value={statuses[supply.supply_id] || ""}
-                    onChange={(e) =>
-                      handleStatusChange(supply.supply_id, e.target.value)
-                    }
-                  >
-                    <option value="">Select Status</option>
-                    <option value="Acknowledged">Acknowledged</option>
-                    <option value="Packaged">Packaged</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
-                  <button
-                    className="update-button"
-                    onClick={() =>
-                      handleUpdateStatus(
-                        supply.supply_id,
-                        statuses[supply.supply_id]
-                      )
-                    }
-                    disabled={
-                      disabledButtons[supply.supply_id] ||
-                      !statuses[supply.supply_id]
-                    }
-                  >
-                    {disabledButtons[supply.supply_id]
-                      ? "Updating..."
-                      : "Update Status"}
-                  </button>
-                </div>
-                {responseMessages[supply.supply_id] && (
-                  <p className="response-message">
-                    {responseMessages[supply.supply_id]}
+          supplies
+            .slice()
+            .reverse()
+            .map((supply) => (
+              <div className="supply-card" key={supply._id}>
+                <div className="left-section">
+                  <p>
+                    <strong>Supply ID:</strong> {supply.supply_id}
                   </p>
-                )}
-              </div>
-              <div className="right-section">
-                <h3>Ordered Products</h3>
-                {supply.enriched_products.map((product, index) => (
-                  <div key={index} className="product-item">
-                    <p>
-                      <strong>Product Name:</strong> {product.name}
-                    </p>
-                    <p>
-                      <strong>Price:</strong> ${product.price}
-                    </p>
-                    <p>
-                      <strong>Quantity:</strong> {product.quantity}
-                    </p>
-                    <p>
-                      <strong>Subtotal:</strong> ${product.subtotal_price}
-                    </p>
+                  <p>
+                    <strong>Buyer Name:</strong> {supply.buyer_name}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {supply.phone}
+                  </p>
+                  <p>
+                    <strong>Address:</strong> {supply.address}
+                  </p>
+                  <p>
+                    <strong>Payment:</strong> {supply.payment}
+                  </p>
+                  <p>
+                    <strong>Bank Transaction:</strong> {supply.bank_transaction}
+                  </p>
+                  <p>
+                    <strong>Current Status:</strong>{" "}
+                    {currentStatus !== ""
+                      ? currentStatus
+                      : supply.current_status}
+                  </p>
+                  <div className="action-row">
+                    <select
+                      className="status-dropdown"
+                      value={statuses[supply.supply_id] || ""}
+                      onChange={(e) =>
+                        handleStatusChange(supply.supply_id, e.target.value)
+                      }
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Acknowledged">Acknowledged</option>
+                      <option value="Packaged">Packaged</option>
+                      <option value="Delivered">Delivered</option>
+                    </select>
+                    <button
+                      className="update-button"
+                      onClick={() =>
+                        handleUpdateStatus(
+                          supply.supply_id,
+                          statuses[supply.supply_id]
+                        )
+                      }
+                      disabled={
+                        disabledButtons[supply.supply_id] ||
+                        !statuses[supply.supply_id]
+                      }
+                    >
+                      {disabledButtons[supply.supply_id]
+                        ? "Updating..."
+                        : "Update Status"}
+                    </button>
                   </div>
-                ))}
-                <p className="total-price">
-                  <strong>Total Price:</strong> ${supply.total_price}
-                </p>
+                  {responseMessages[supply.supply_id] && (
+                    <p className="response-message">
+                      {responseMessages[supply.supply_id]}
+                    </p>
+                  )}
+                </div>
+                <div className="right-section">
+                  <h3>Ordered Products</h3>
+                  {supply.enriched_products.map((product, index) => (
+                    <div key={index} className="product-item">
+                      <p>
+                        <strong>Product Name:</strong> {product.name}
+                      </p>
+                      <p>
+                        <strong>Price:</strong> ${product.price}
+                      </p>
+                      <p>
+                        <strong>Quantity:</strong> {product.quantity}
+                      </p>
+                      <p>
+                        <strong>Subtotal:</strong> ${product.subtotal_price}
+                      </p>
+                    </div>
+                  ))}
+                  <p className="total-price">
+                    <strong>Total Price:</strong> ${supply.total_price}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))
+            ))
         )}
       </div>
     </div>
