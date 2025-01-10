@@ -83,10 +83,6 @@ const Login = () => {
           </button>
         </div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
-        {/* <button type="submit" className="login-button">
-          Log In
-        </button> */}
-
         <button
           type="submit"
           className={`login-button ${isProcessing ? "disabled-button" : ""}`}
