@@ -87,6 +87,25 @@
   background: #5521e2;
 }
 
+.loading-icon {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-top-color: #4ca1af;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.disabled-button {
+  cursor: not-allowed;
+}
+
+.disabled-button:hover {
+  transform: none;
+}
+
 .error-message {
   color: red;
   font-size: 14px;

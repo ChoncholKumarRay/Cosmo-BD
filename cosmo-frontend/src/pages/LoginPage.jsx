@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const navigate = useNavigate();
 
@@ -17,6 +18,13 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      setErrorMessage("Please provide both username and password!");
+      return;
+    }
+
+    setErrorMessage("");
+    setIsProcessing(true);
     try {
       const response = await fetch(
         "https://cosmo.cam-sust.org/api/admin/login",
@@ -75,8 +83,17 @@ const Login = () => {
           </button>
         </div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
-        <button type="submit" className="login-button">
+        {/* <button type="submit" className="login-button">
           Log In
+        </button> */}
+
+        <button
+          type="submit"
+          className={`login-button ${isProcessing ? "disabled-button" : ""}`}
+          onClick={handleLogin}
+          disabled={isProcessing}
+        >
+          {isProcessing ? <span className="loading-icon"></span> : "Login"}{" "}
         </button>
       </form>
     </div>
