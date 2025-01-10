@@ -9,9 +9,6 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const cosmoBackend = import.meta.env.VITE_COSMO_BACKEND;
-  console.log(cosmoBackend);
-
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
